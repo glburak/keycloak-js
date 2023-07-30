@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Keycloak SSO Örneği</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Keycloak SSO Örneği</h1>
+    <button onclick="login()">Giriş Yap</button>
+    <button onclick="logout()">Çıkış Yap</button>
+
+<script>
+        function login() {
+            var otherSiteURL = "http://localhost:8000"; // Hedef site URL'si
+            window.location.href = otherSiteURL;
+        }
+
+        function logout() {
+            keycloak.logout();
+        }
+    </script>
+</body>
+</html>
