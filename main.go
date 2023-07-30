@@ -13,7 +13,7 @@ var (
 	clientID     = "sso"
 	clientSecret = "X8vL8Y82R5oZemdyQjxvKD60dBtGvZrH"
 	realm        = "master"
-	frontend     = "https://localhost"
+	frontend     = "https://localhost/index2.html"
 	keycloakURL  = "http://localhost:8090/auth"
 	callbackURL  = "http://localhost:8000/callback"
 	grantType    = "authorization_code"
@@ -49,8 +49,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 		Code:         &code,
 		ClientSecret: &clientSecret,
 		GrantType:    &grantType,
-		RedirectURI: &frontend,
-		
+		RedirectURI:  &callbackURL,
 	})
 
 	if err != nil {
@@ -65,7 +64,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Kullanıcı bilgileri alınamadı", http.StatusInternalServerError)
 		return
 	}
-
+	http.Redirect(w, r, frontend+"?username="+*userInfo.PreferredUsername, http.StatusFound)
 	// Kullanıcı adını gösteriyoruz
 	w.Write([]byte("Kullanıcı Adı: " + *userInfo.PreferredUsername))
 }
