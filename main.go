@@ -9,13 +9,14 @@ import (
 	"github.com/Nerzal/gocloak"
 )
 
-const (
+var (
 	clientID     = "sso"
-	clientSecret = "C0YMy5qFrqt9r46eQkC1rMs7WBgdsvdW"
+	clientSecret = "X8vL8Y82R5oZemdyQjxvKD60dBtGvZrH"
 	realm        = "master"
-	frontend     = `TokenOptions:"https://localhost"`
+	frontend     = "https://localhost"
 	keycloakURL  = "http://localhost:8090/auth"
 	callbackURL  = "http://localhost:8000/callback"
+	grantType    = "authorization_code"
 )
 
 func main() {
@@ -44,10 +45,16 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	token, err := keycloakClient.GetToken(ctx, realm, gocloak.TokenOptions{
 
-		ClientID: clientID,
+		ClientID:     &clientID,
+		Code:         &code,
+		ClientSecret: &clientSecret,
+		GrantType:    &grantType,
+		RedirectURI: &frontend,
+		
 	})
 
 	if err != nil {
+		fmt.Println(err.Error())
 		http.Error(w, "Kimlik doğrulama hatası", http.StatusInternalServerError)
 		return
 	}
