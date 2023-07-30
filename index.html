@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Keycloak SSO Örneği</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Keycloak SSO Örneği</h1>
+    <button onclick="login()">Giriş Yap</button>
+    <button onclick="logout()">Çıkış Yap</button>
+
+    <script src="http://localhost:8090/auth/js/keycloak.js"></script>
+    <script>
+        const keycloakConfig = {
+            url: 'http://localhost:8090/auth', // Keycloak sunucusunun adresi
+            realm: 'master', // Keycloak gerçekmiş gibi alınan gerçek adı yerine yazın
+            clientId: 'sso', // Keycloak istemci kimliği
+        };
+
+        const keycloak = Keycloak(keycloakConfig);
+
+        keycloak.init({ onLoad: 'login-required' })
+            .then(authenticated => {
+                if (authenticated) {
+                    displayUserInfo();
+                }
+            })
+            .catch(err => {
+                console.error('Keycloak inceleme hatası:', err);
+            });
+
+        function displayUserInfo() {
+            const userInfoDiv = document.createElement('div');
+            userInfoDiv.innerHTML = `<p>Kullanıcı Adı: ${keycloak.tokenParsed.preferred_username}</p>`;
+            document.body.appendChild(userInfoDiv);
+        }
+
+        function login() {
+            keycloak.login();
+        }
+
+        function logout() {
+            keycloak.logout();
+        }
+    </script>
+</body>
+</html>
